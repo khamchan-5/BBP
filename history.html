@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ປະວັດການສັ່ງຊື້ & ຍອດຂາຍ</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&display=swap');
+        * { box-sizing: border-box; font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif; }
+        body { background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
+        .header { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; padding: 20px 25px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { margin: 0; font-size: 1.5rem; }
+        .btn-back { background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 500; }
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .summary-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; }
+        .summary-card h3 { margin: 0 0 10px 0; color: #64748b; font-size: 1rem; }
+        .summary-card .value { font-size: 2rem; font-weight: 600; color: #10b981; }
+        .table-container { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid #e2e8f0; }
+        th { background-color: #f8fafc; color: #475569; font-weight: 600; }
+        .empty-state { text-align: center; color: #94a3b8; padding: 40px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📜 ປະວັດການສັ່ງຊື້ & ສະຫຼຸບຍອດຂາຍ</h1>
+        <a href="admin.html" class="btn-back">⬅️ ກັບໜ້າແອດມິນ</a>
+    </div>
+
+    <div class="summary-grid">
+        <div class="summary-card">
+            <h3>ຍອດຂາຍລວມທັງໝົດ</h3>
+            <div class="value" id="total-revenue">0 ກີບ</div>
+        </div>
+        <div class="summary-card">
+            <h3>ຈຳນວນບິນທີ່ປິດແລ້ວ</h3>
+            <div class="value" id="total-orders" style="color: #3b82f6;">0 ບິນ</div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ວັນ-ເວລາ ຊຳລະເງິນ</th>
+                    <th>ໂຕະ</th>
+                    <th>รายการอาหารที่สั่งทั้งหมด</th>
+                    <th>ຍອດເງິນລວມ</th>
+                </tr>
+            </thead>
+            <tbody id="history-table-body">
+                <tr><td colspan="4" class="empty-state">ກຳລັງໂຫຼດຂໍ້ມູນປະວັດ...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBuSEbFvAoU3Z9X3LktX_SlIm6EMHRRtsg",
+            authDomain: "my-restaurant-3da21.firebaseapp.com",
+            databaseURL: "https://my-restaurant-3da21-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "my-restaurant-3da21",
+            storageBucket: "my-restaurant-3da21.firebasestorage.app",
+            messagingSenderId: "932377209963",
+            appId: "1:932377209963:web:b2b117656e0d7e3366d52e",
+            measurementId: "G-4DQHD8RLB8"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        database.ref('transaction_history').on('value', (snapshot) => {
+            const data = snapshot.val();
+            const tableBody = document.getElementById('history-table-body');
+            tableBody.innerHTML = '';
+            let totalRevenue = 0, billCount = 0;
+
+            if (data) {
+                Object.values(data).reverse().forEach((item) => {
+                    const tr = document.createElement('tr');
+                    const itemsText = item.items ? item.items.map(i => `${i.name} (x${i.quantity})`).join(', ') : '-';
+                    totalRevenue += Number(item.total || 0);
+                    billCount++;
+                    tr.innerHTML = `
+                        <td>${item.completedAt || '-'}</td>
+                        <td><strong>ໂຕະ ${item.table}</strong></td>
+                        <td>${itemsText}</td>
+                        <td><strong style="color:#10b981;">${item.total ? item.total.toLocaleString() + ' ກີບ' : '-'}</strong></td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+                document.getElementById('total-revenue').innerText = `${totalRevenue.toLocaleString()} ກີບ`;
+                document.getElementById('total-orders').innerText = `${billCount} ບິນ`;
+            } else {
+                tableBody.innerHTML = '<tr><td colspan="4" class="empty-state">ຍັງບໍ່ມີປະວັດການຊຳລະເງິນ</td></tr>';
+            }
+        });
+    </script>
+</body>
+</html>

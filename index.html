@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ເມນູອາຫານ (Order Food)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="header">
+        <div class="brand-container">
+            <!-- โลโกร้าน (เปลี่ยน URL เป็นรูปโลโก้ของคุณได้) -->
+            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=100" class="logo-img" alt="Logo">
+            <h1>ຮ້ານອາຫານ ເຊີນແຊບ</h1>
+        </div>
+        <div class="table-badge" id="table-display">ໂຕະ: -</div>
+    </div>
+
+    <div class="container">
+        <!-- ปุ่มเรียกพนักงาน & เช็คบิล -->
+        <div class="service-buttons">
+            <button class="btn-service btn-call" onclick="callStaff()">🙋‍♂️ ຮຽກພະນັກງານ</button>
+            <button class="btn-service btn-bill" onclick="requestBill()">💰 ແຈ້ງເຊັກບິນ</button>
+        </div>
+
+        <!-- แถบหมวดหมู่ 4 หมวด -->
+        <div class="category-tabs">
+            <button class="tab-btn active" onclick="filterCategory('food')">🍱 ອາຫານ (Food)</button>
+            <button class="tab-btn" onclick="filterCategory('drink')">🥤 ເຄື່ອງດື່ມ (Drink)</button>
+            <button class="tab-btn" onclick="filterCategory('snack')">🍺 ຂອງແກ້ມ (Snack)</button>
+            <button class="tab-btn" onclick="filterCategory('service')">🛎️ ບໍລິການ (Service)</button>
+        </div>
+
+        <!-- รายการเมนูอาหาร -->
+        <div class="menu-grid" id="menu-container">
+            <!-- เมนูจะแสดงตามหมวดหมู่ด้วย JavaScript -->
+        </div>
+
+        <!-- รายการที่สั่งและเสิร์ฟแล้ว (สำหรับลูกค้าดูยอดรวม) -->
+        <div class="served-section">
+            <div class="served-title">✅ ອາຫານທີ່เสิร์ฟແລ້ວ (รายการที่ได้รับ)</div>
+            <div id="served-items-list">
+                <div style="color: #94a3b8; font-size: 0.85rem;">ຍັງບໍ່ມີรายการที่เสิร์ฟ</div>
+            </div>
+            <div class="served-summary">
+                <span>ຍອດລວມທັງໝົດ:</span>
+                <span id="served-total-price" style="color: #dc2626;">0 ກີບ</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- แถบตะกร้าสินค้า -->
+    <div class="cart-bar" id="cart-bar">
+        <div>
+            <div id="cart-count" style="font-size: 0.85rem; color: #94a3b8;">0 รายการ</div>
+            <div id="cart-total" style="font-size: 1.1rem; font-weight: 700;">0 ກີບ</div>
+        </div>
+        <button class="btn-submit" onclick="submitOrder()">🚀 ສົ່ງອໍເດີ້</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
