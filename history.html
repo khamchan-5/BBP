@@ -95,7 +95,7 @@
                 document.getElementById('total-orders').innerText = `${billCount} ບິນ`;
             } else {
                 tableBody.innerHTML = '<tr><td colspan="4" class="empty-state">ຍັງບໍ່ມີປະວັດການຊຳລະເງິນ</td></tr>';
-            }
+            }database.ref('transaction_history').remove();
         });
     </script>
 </body>
